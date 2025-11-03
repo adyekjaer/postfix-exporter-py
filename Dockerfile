@@ -20,7 +20,6 @@ WORKDIR /app
 
 # Create group and user 'postfix' with specific uid/gid, and add to adm group (gid 4)
 RUN addgroup --gid 115 postfix \
-    && addgroup --gid 4 adm \
     && adduser --uid 110 --gid 115 --disabled-password --gecos "" \
         --home "/nonexistent" --shell "/sbin/nologin" --no-create-home postfix \
     && adduser postfix adm
