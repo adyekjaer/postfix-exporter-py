@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  postfix-exporter:
+    build:
+      context: .
+    ports:
+      - "9115:9115"
+    volumes:
+      - ./testdata:/testdata
+      - /usr/sbin/postqueue:/usr/sbin/postqueue:ro
+      - /var/spool/postfix/public/showq:/var/spool/postfix/public/showq
+    command: ["--test", "--config", "/app/config.yaml", "--log_unsupported_lines", "--logfile", "/testdata/mail_iso.log"]
