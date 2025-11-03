@@ -2,29 +2,35 @@
 
 **postfix-exporter-py** is a Prometheus exporter written in Python that reads Postfix mail logs and exposes relevant metrics in a highly configurable and easy-to-use way. This exporter allows you to monitor your Postfix mail server performance, queue statistics, delivery status, and more in real-time via Prometheus.
 
+It is meant to run in a docker conainer under e.g. docker compose and not directly on the host although that is supported.
+You would need to create your own systemd files
+
 ---
 
 ## Features
 
 * Parses Postfix `mail.log` files to extract key metrics.
 * Exposes metrics such as:
-
   * Number of queued messages
   * Deferred, bounced, and rejected messages
-  * Delivery delays and status codes
   * Number of recipients per message
-  * Milter and SMTP rejects
-* Fully configurable log path, metric labels, and update intervals.
-* Lightweight Python implementation.
-* Easy integration with Prometheus and Grafana.
+  * SMTP rejects
+* Fully configurable log path, metrics via config file
 
 ---
 
-## Installation
+## Todo
+  * Delivery delays and status codes
+  * Work as a systemd process
+  * Work in a kubernetes environment
+
+---
+
+## Manual Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/postfix-exporter-py.git
+git clone https://github.com/adyekjaer/postfix-exporter-py.git
 cd postfix-exporter-py
 
 # Optional: create a virtual environment
@@ -32,38 +38,69 @@ python3 -m venv venv
 source venv/bin/activate
 
 # Install dependencies
-pip install -r requirements.txt
+pip install -r src/requirements.txt
+
+# Start tailing mail.log
+python src/postfix_exporter.py <some flags>
+```
+
+## Docker compose
+
+```bash
+# Clone the repository
+git clone https://github.com/adyekjaer/postfix-exporter-py.git
+cd postfix-exporter-py
+
+# Optional: edit compose.yaml
+vim compose.yaml
+
+# Start tailing mail.log
+docker compose up
 ```
 
 ---
 
 ## Configuration
 
-Configuration is provided via a YAML or JSON config file (default: `config.yaml`).
+Configuration is provided via a YAML file (default: `config.yaml`).
+This file is more or less just regexes to suit your needs.
+You'll need to provide process name, subprocess, name of section, metric type and the regex.
+With a process and subprocess all regexes are performed in sequence until match is found - order as you see fit if required.
+
+There are 3 static metrics that are build-in:
+
+  * postfix_queue_length (Counter)
+  * postfix_message_size (Histogram)
+  * postfix_message_nrcpt (Histogram)
 
 Example `config.yaml`:
 
 ```yaml
-log_path: /var/log/mail.log
-update_interval: 15  # seconds between metrics updates
-metrics:
-  track_queued: true
-  track_rejected: true
-  track_deferred: true
-  track_bounced: true
-  track_delivery_delay: true
-labels:
-  host: my-mail-server
+postfix:
+  qmgr:
+    entering_queue:
+      type: counter
+      metric_name: postfix_qmgr_entering_queue
+      help: 'Qmgr messages entering queue events'
+      regex: '^(?P<id>[A-F0-9]{6,}): from=<(?P<from>[^>]*)>, size=(?P<size>\d+), nrcpt=(?P<nrcpt>\d+)'
+    removed:
+      type: counter
+      metric_name: postfix_qmgr_removed
+      help: 'Qmgr messages removed from queue events'
+      regex: '^(?P<id>[A-F0-9]{6,}): removed'
 ```
 
 **Options:**
 
-| Option            | Description                                         |
-| ----------------- | --------------------------------------------------- |
-| `log_path`        | Path to your Postfix mail log file                  |
-| `update_interval` | Time in seconds between metric collection           |
-| `metrics`         | Boolean flags to enable/disable specific metrics    |
-| `labels`          | Optional Prometheus labels to attach to all metrics |
+| Option                  | Description                                         |
+| ----------------------- | --------------------------------------------------- |
+| `logfile`               | Path to your Postfix mail log file                  |
+| `config`                | Path to configuration file                          |
+| `test`                  | Parses entire file, then exits                      |
+| `log_unsupported_lines` | Outputs lines that was not recognized by any regex  |
+| `time-format`           | BSD or ISO based timestamps                         |
+| `postqueue`             | Use postqueue for the additional queue metrics      |
+| `port`                  | HTTP port to listen on for prom metrics             |
 
 ---
 
@@ -73,7 +110,7 @@ labels:
 # Run the exporter
 python postfix_exporter.py --config config.yaml
 
-# By default, the metrics will be exposed at http://localhost:9110/metrics
+# By default, the metrics will be exposed at http://localhost:9115/metrics
 ```
 
 You can configure the port via command-line arguments or the config file.
@@ -86,7 +123,7 @@ Add the exporter to your Prometheus `scrape_configs`:
 scrape_configs:
   - job_name: 'postfix'
     static_configs:
-      - targets: ['localhost:9110']
+      - targets: ['localhost:9115']
 ```
 
 ---
@@ -95,14 +132,38 @@ scrape_configs:
 
 Here are some example metrics you can expect:
 
-| Metric                            | Labels       | Description                                                           |
-| --------------------------------- | ------------ | --------------------------------------------------------------------- |
-| `postfix_queue_total`             | `queue_type` | Number of messages in a specific queue (active, deferred, hold, etc.) |
-| `postfix_messages_rejected_total` | `reason`     | Total number of rejected messages with rejection reason               |
-| `postfix_messages_bounced_total`  |              | Total number of bounced messages                                      |
-| `postfix_messages_deferred_total` |              | Total number of deferred messages                                     |
-| `postfix_delivery_delay_seconds`  | `recipient`  | Delivery delay in seconds                                             |
-| `postfix_recipients_per_message`  | `queue_id`   | Number of recipients for each queued message                          |
+| Metric                                   | Labels                                 | Description                                                           |
+| ---------------------------------------- | -------------------------------------- | --------------------------------------------------------------------- |
+| `postfix_queue_length`                   | `queue_name`                          | Number of messages in each postfix queue (active, deferred, hold, incoming, maildrop) |
+| `postfix_unsupported_log_entries_total`  | `subprocess`, `level`                 | Total number of unsupported Postfix log entries                       |
+| `postfix_message_size_bytes`             |                                        | Size of Postfix log messages in bytes (histogram)                     |
+| `postfix_message_nrcpt_total`            |                                        | Number of recipients for Postfix log messages (histogram)             |
+| `postfix_log_levels_total`               | `level`, `process`, `subprocess`      | Total number of Postfix log entries by level, process, and subprocess |
+| `postfix_qmgr_entering_queue`            |                                        | Qmgr messages entering queue events                                   |
+| `postfix_qmgr_removed`                   |                                        | Qmgr messages removed from queue events                               |
+| `postfix_qmgr_expired`                   |                                        | Qmgr messages expired events                                          |
+| `postfix_cleanup_processes`              |                                        | Total cleanup processes                                               |
+| `postfix_smtp_connections`               |                                        | Total SMTP connections                                                |
+| `postfix_smtp_disconnections`            |                                        | Total SMTP disconnections                                             |
+| `postfix_smtp_lost_connections`          |                                        | Total SMTP lost connections                                           |
+| `postfix_smtp_noqueue_reject`            |                                        | Total SMTPD noqueue reject events                                     |
+| `postfix_smtp_sasl_failed`               |                                        | Total SMTP SASL authentication failures                               |
+| `postfix_smtp_deliveries`                |                                        | Total SMTP deliveries                                                 |
+| `postfix_smtp_deferred`                  |                                        | Total SMTP deferred messages                                          |
+| `postfix_smtp_bounced`                   |                                        | Total SMTP bounced messages                                           |
+| `postfix_pickup_requests`                |                                        | Total pickup requests                                                 |
+| `postfix_local_deliveries`               |                                        | Total local deliveries                                                |
+| `postfix_virtual_deliveries`             |                                        | Total virtual deliveries                                              |
+| `postfix_bounce_bounced`                 |                                        | Total bounce bounced messages                                         |
+| `postfix_lmtp_deliveries`                |                                        | Total LMTP deliveries                                                 |
+| `postfix_lmtp_deferred`                  |                                        | Total LMTP deferred messages                                          |
+| `postfix_lmtp_bounced`                   |                                        | Total LMTP bounced messages                                           |
+| `postfix_submission_smtp_connections`    |                                        | Total Submission SMTP connections                                     |
+| `postfix_submission_smtp_disconnections` |                                        | Total Submission SMTP disconnections                                  |
+| `postfix_submission_smtp_lost_connections`|                                       | Total Submission SMTP lost connections                                |
+| `postfix_submission_smtp_authentication` |                                        | Total Submission SMTP successful authentications                      |
+| `postfix_submission_smtp_noqueue`        |                                        | Total Submission SMTP noqueue events                                  |
+| `postfix_submission_smtp_sasl_failed`    |                                        | Total Submission SMTP SASL authentication failures                    |
 
 You can add more metrics depending on your configuration.
 
@@ -122,5 +183,5 @@ MIT License. See `LICENSE` file for details.
 
 ## Contact
 
-For questions or support, contact `yourname@example.com` or open an issue on the GitHub repository.
+For questions or support, open an issue on the GitHub repository.
 
