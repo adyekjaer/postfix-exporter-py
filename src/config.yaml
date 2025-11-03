@@ -36,7 +36,7 @@ postfix:
       type: counter
       metric_name: postfix_smtp_lost_connections
       help: 'Total SMTP lost connections'
-      regex: 'lost connection after [A-Z]+ from (?P<from>[^\[]+)\[(?P<ip>[^\]]+)\]'
+      regex: 'lost connection after \S+ from (?P<from>[^\[]+)\[(?P<ip>[^\]]+)\]'
     smtpd_noqueue_reject:
       type: counter
       metric_name: postfix_smtp_noqueue_reject
@@ -118,7 +118,7 @@ postfix:
       type: counter
       metric_name: postfix_submission_smtp_lost_connections
       help: 'Total Submission SMTP lost connections'
-      regex: 'lost connection after .* from=(?P<from>[^,]+),'
+      regex: 'lost connection after \S+ from=(?P<from>[^,]+),'
     submission_smtpd_authentication:
       type: counter
       metric_name: postfix_submission_smtp_authentication
