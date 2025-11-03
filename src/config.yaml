@@ -1,0 +1,29 @@
+postfix:
+  qmgr:
+    qmgr_events:
+      type: counter
+      metric_name: postfix_qmgr_total
+      help: 'Total qmgr events'
+      regex: '^(?P<id>[A-F0-9]{6,}):(?: from=<(?P<from>[^>]*)>,)?(?: size=(?P<size>\d+),)?(?: nrcpt=(?P<nrcpt>\d+))?'
+  cleanup:
+    cleanup_processes:
+     type: counter
+     metric_name: postfix_cleanup_processes_total
+     help: 'Total cleanup processes'
+     regex: ': message-id=<[^>]+>'
+    cleanup_rejects:
+     type: counter
+     metric_name: postfix_cleanup_rejects_total
+     help: 'Total cleanup rejects'
+     regex: ': reject: '
+#  lmtp:
+#  pipe:
+#  qmgr:
+#  smtp:
+#  smtpd:
+#  bounce:
+#  virtual:
+#  postscreen:
+#  submission/smtpd:
+#opendkim:
+#
