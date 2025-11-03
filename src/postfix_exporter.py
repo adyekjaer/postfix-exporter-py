@@ -13,13 +13,20 @@ class QueueCollector:
 
     def collect(self):
         # Postqueue -j metric on each collection
-        queue_counts = self.postqueue_reader.get_queue_length_by_name()
+        known_queues = ['active', 'deferred', 'hold', 'incoming', 'maildrop']
+        queue_counts = {}
+        try:
+            queue_counts = self.postqueue_reader.get_queue_length_by_name()
+        except Exception:
+            # If we can't read data, default to zero for all
+            queue_counts = {}
         metric = GaugeMetricFamily(
             'postfix_queue_length',
             'Number of messages in each postfix queue',
             labels=['queue_name']
         )
-        for queue_name, count in queue_counts.items():
+        for queue_name in known_queues:
+            count = queue_counts.get(queue_name, 0)
             metric.add_metric([queue_name], count)
         yield metric
 
