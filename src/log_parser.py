@@ -58,11 +58,12 @@ class LogParser:
             ['level', 'process', 'subprocess']
         )
 
-    def add_to_unsupported_line(self, line, subprocess, level):
-        if getattr(self, 'log_unsupported_lines', False):
-            print(f"Unsupported Line: {line}, Subprocess: {subprocess}, Level: {level}")
-        if hasattr(self, 'unsupportedLogEntries'):
-            self.unsupportedLogEntries.labels(subprocess, level).inc()
+    def add_to_unsupported_line(self, line, subprocess, level, message):
+        # remove trailing newline from line for better readability
+        line = line.rstrip()
+        if self.log_unsupported_lines:
+            print(f"\n########################## Unsupported Line ################################:\n{line}\nSubprocess: {subprocess}\nLevel: {level}\nMessage: {message}")
+        self.unsupportedLogEntries.labels(subprocess, level).inc()
 
     def add_to_histogram(self, histogram, value, field_name):
         try:
@@ -117,7 +118,7 @@ class LogParser:
 
     def parse(self, line):
         if not (line_details := self.parse_line(line)):
-            self.add_to_unsupported_line(line, "unknown", "unknown")
+            self.add_to_unsupported_line(line, "unknown", "unknown", "unknown")
             return
 
         process = line_details['process']
@@ -154,5 +155,5 @@ class LogParser:
                     matched = True
                     break
         if not matched:
-            self.add_to_unsupported_line(line, subprocess or process, level)
+            self.add_to_unsupported_line(line, subprocess or process, level, message)
 
