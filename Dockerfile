@@ -18,10 +18,12 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Create group and user 'postfix' with specific uid/gid
+# Create group and user 'postfix' with specific uid/gid, and add to adm group (gid 4)
 RUN addgroup --gid 115 postfix \
+    && addgroup --gid 4 adm \
     && adduser --uid 110 --gid 115 --disabled-password --gecos "" \
-        --home "/nonexistent" --shell "/sbin/nologin" --no-create-home postfix
+        --home "/nonexistent" --shell "/sbin/nologin" --no-create-home postfix \
+    && adduser postfix adm
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.cache/pip to speed up subsequent builds.
