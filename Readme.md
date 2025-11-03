@@ -20,6 +20,7 @@ You would need to create your own systemd files
 ---
 
 ## Todo
+  * Write tests
   * Delivery delays and status codes
   * Work as a systemd process
   * Work in a kubernetes environment
