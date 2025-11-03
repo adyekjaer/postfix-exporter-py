@@ -1,0 +1,136 @@
+postfix:
+  qmgr:
+    entering_queue:
+      type: counter
+      metric_name: postfix_qmgr_entering_queue
+      help: 'Qmgr messages entering queue events'
+      regex: '^(?P<id>[A-F0-9]{6,}): from=<(?P<from>[^>]*)>, size=(?P<size>\d+), nrcpt=(?P<nrcpt>\d+)'
+    removed:
+      type: counter
+      metric_name: postfix_qmgr_removed
+      help: 'Qmgr messages removed from queue events'
+      regex: '^(?P<id>[A-F0-9]{6,}): removed'
+    expired:
+      type: counter
+      metric_name: postfix_qmgr_expired
+      help: 'Qmgr messages expired events'
+      regex: '^(?P<id>[A-F0-9]{6,}): .*status=expired'
+  cleanup:
+    cleanup_processes:
+      type: counter
+      metric_name: postfix_cleanup_processes
+      help: 'Total cleanup processes'
+      regex: '^(?P<id>[A-F0-9]{6,}): message-id=<(?P<message_id>[^>]+)>'
+  smtpd:
+    smtpd_connections:
+      type: counter
+      metric_name: postfix_smtp_connections
+      help: 'Total SMTP connections'
+      regex: 'connect from (?P<from>[^\[]+)\[(?P<ip>[^\]]+)\]'
+    smtpd_disconnections:
+      type: counter
+      metric_name: postfix_smtp_disconnections
+      help: 'Total SMTP disconnections'
+      regex: 'disconnect from (?P<from>[^\[]+)\[(?P<ip>[^\]]+)\]'
+    smtpd_lost_connections:
+      type: counter
+      metric_name: postfix_smtp_lost_connections
+      help: 'Total SMTP lost connections'
+      regex: 'lost connection after \S+ from (?P<from>[^\[]+)\[(?P<ip>[^\]]+)\]'
+    smtpd_noqueue_reject:
+      type: counter
+      metric_name: postfix_smtp_noqueue_reject
+      help: 'Total SMTPD noqueue reject events'
+      regex: 'NOQUEUE: reject: RCPT from (?P<from>[^\[]+)\[(?P<ip>[^\]]+)\]:'
+    smtp_sasl_failed:
+      type: counter
+      metric_name: postfix_smtp_sasl_failed
+      help: 'Total SMTP SASL authentication failures'
+      regex: '(?i)warning: (?P<from>[^\[]+)\[[^\]]+\]: SASL [A-Z]+ authentication failed:'
+  smtp:
+    smtp_deliveries:
+      type: counter
+      metric_name: postfix_smtp_deliveries
+      help: 'Total SMTP deliveries'
+      regex: '^(?P<id>[A-F0-9]{6,}): to=<(?P<to>[^>]*)>, relay=(?P<relay>[^,]+),.* status=(?P<status>sent)'
+    smtp_deferred:
+      type: counter
+      metric_name: postfix_smtp_deferred
+      help: 'Total SMTP deferred messages'
+      regex: '^(?P<id>[A-F0-9]{6,}): to=<(?P<to>[^>]*)>, relay=(?P<relay>[^,]+),.* status=(?P<status>deferred)'
+    smtp_bounced:
+      type: counter
+      metric_name: postfix_smtp_bounced
+      help: 'Total SMTP bounced messages'
+      regex: '^(?P<id>[A-F0-9]{6,}): to=<(?P<to>[^>]*)>, relay=(?P<relay>[^,]+),.* status=(?P<status>bounced)'
+  pickup:
+    pickup_requests:
+      type: counter
+      metric_name: postfix_pickup_requests
+      help: 'Total pickup requests'
+      regex: '^(?P<id>[A-F0-9]{6,}): uid=(?P<uid>\d+), from=<(?P<from>[^>]*)>'
+  local:
+    local_deliveries:
+      type: counter
+      metric_name: postfix_local_deliveries
+      help: 'Total local deliveries'
+      regex: '^(?P<id>[A-F0-9]{6,}): to=<(?P<to>[^>]*)>, relay=local,.* status=(?P<status>sent)'
+  virtual:
+    virtual_deliveries:
+      type: counter
+      metric_name: postfix_virtual_deliveries
+      help: 'Total virtual deliveries'
+      regex: '^(?P<id>[A-F0-9]{6,}): to=<(?P<to>[^>]*)>, relay=virtual,.* status=(?P<status>sent)'
+  bounce:
+    bounce_bounced:
+      type: counter
+      metric_name: postfix_bounce_bounced
+      help: 'Total bounce bounced messages'
+      regex: '^(?P<id>[A-F0-9]{6,}): sender non-delivery notification: (?P<notification_id>[A-F0-9]{6,})'
+  lmtp:
+    lmtp_deliveries:
+      type: counter
+      metric_name: postfix_lmtp_deliveries
+      help: 'Total LMTP deliveries'
+      regex: '^(?P<id>[A-F0-9]{6,}): to=<(?P<to>[^>]*)>, relay=(?P<relay>[^,]+),.* status=(?P<status>sent)'
+    lmtp_deferred:
+      type: counter
+      metric_name: postfix_lmtp_deferred
+      help: 'Total LMTP deferred messages'
+      regex: '^(?P<id>[A-F0-9]{6,}): to=<(?P<to>[^>]*)>, relay=lmtp,.* status=(?P<status>deferred)'
+    lmtp_bounced:
+      type: counter
+      metric_name: postfix_lmtp_bounced
+      help: 'Total LMTP bounced messages'
+      regex: '^(?P<id>[A-F0-9]{6,}): to=<(?P<to>[^>]*)>, relay=(?P<relay>[^,]+),.* status=(?P<status>bounced)'
+  submission/smtpd:
+    submission_smtpd_connections:
+      type: counter
+      metric_name: postfix_submission_smtp_connections
+      help: 'Total Submission SMTP connections'
+      regex: 'connect from (?P<from>[^\[]+)\[(?P<ip>[^\]]+)\]'
+    submission_smtpd_disconnections:
+      type: counter
+      metric_name: postfix_submission_smtp_disconnections
+      help: 'Total Submission SMTP disconnections'
+      regex: 'disconnect from (?P<from>[^\[]+)\[(?P<ip>[^\]]+)\]'
+    submission_smtpd_lost_connections:
+      type: counter
+      metric_name: postfix_submission_smtp_lost_connections
+      help: 'Total Submission SMTP lost connections'
+      regex: 'lost connection after \S+ from (?P<from>[^\[]+)\[(?P<ip>[^\]]+)\]'
+    submission_smtpd_authentication:
+      type: counter
+      metric_name: postfix_submission_smtp_authentication
+      help: 'Total Submission SMTP successful authentications'
+      regex: '^(?P<id>[A-F0-9]{6,}): client=(?P<client>[^\[]+)\[(?P<ip>[^\]]+)\], sasl_method=(?P<sasl_method>[^,]+), sasl_username=(?P<sasl_username>[^\s,]+)'
+    submission_smtpd_noqueue:
+      type: counter
+      metric_name: postfix_submission_smtp_noqueue
+      help: 'Total Submission SMTP noqueue events'
+      regex: 'NOQUEUE: reject: \S+ from (?P<from>\S+)\[(?P<ip>[^\]]+)\]:'
+    submission_smtp_sasl_failed:
+      type: counter
+      metric_name: postfix_submission_smtp_sasl_failed
+      help: 'Total Submission SMTP SASL authentication failures'
+      regex: '(?i)warning: (?P<from>[^\[]+)\[[^\]]+\]: SASL [A-Z]+ authentication failed:'

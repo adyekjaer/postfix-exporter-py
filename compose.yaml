@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  postfix-exporter:
+    build:
+      context: .
+    ports:
+      - "9115:9115"
+    volumes:
+      - /var/log:/var/log
+      - /var/spool/postfix/public/showq:/var/spool/postfix/public/showq:ro
+    command: ["--config", "/app/config.yaml", "--log_unsupported_lines", "--logfile", "/var/log/mail.log", "--postqueue"]
