@@ -16,10 +16,7 @@ class LogParser:
         self.time_format = time_format
 
         qmgr_regex = (
-            r'^(?P<id>[A-F0-9]{6,}):'
-            r'(?: from=<(?P<from>[^>]*)>,)?'
-            r'(?: size=(?P<size>\d+),)?'
-            r'(?: nrcpt=(?P<nrcpt>\d+))?'
+            r'^(?P<id>[A-F0-9]{6,}): from=<(?P<from>[^>]*)>, size=(?P<size>\d+), nrcpt=(?P<nrcpt>\d+)'
         )
         self.qmgr_regex_compiled = re.compile(qmgr_regex)
 
@@ -57,8 +54,8 @@ class LogParser:
         # Add hardcoded counters for different levels
         self.postfix_log_levels = Counter(
             'postfix_log_levels_total',
-            'Total number of Postfix log entries by level',
-            ['level']
+            'Total number of Postfix log entries by level, process, and subprocess',
+            ['level', 'process', 'subprocess']
         )
 
     def add_to_unsupported_line(self, line, subprocess, level):
@@ -132,7 +129,7 @@ class LogParser:
         level = level_match.group(1) if level_match else "info"
 
         # Increment log level counter
-        self.postfix_log_levels.labels(level).inc()
+        self.postfix_log_levels.labels(level, process, subprocess or '').inc()
 
         # Increment histograms for message length and size
         if process == 'postfix' and subprocess == 'qmgr':
@@ -151,7 +148,7 @@ class LogParser:
         matched = False
         for regex, metric in zip(regex_list, metric_list):
             if regex and metric:
-                m = regex.search(message)
+                m = regex.match(message)
                 if m:
                     metric.inc()
                     matched = True
