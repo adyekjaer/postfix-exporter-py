@@ -128,7 +128,7 @@ postfix:
       type: counter
       metric_name: postfix_submission_smtp_noqueue
       help: 'Total Submission SMTP noqueue events'
-      regex: 'NOQUEUE: reject: .* from=(?P<from>[^,]+),'
+      regex: 'NOQUEUE: reject: \S+ from (?P<from>\S+)\[(?P<ip>[^\]]+)\]:'
     submission_smtp_sasl_failed:
       type: counter
       metric_name: postfix_submission_smtp_sasl_failed
