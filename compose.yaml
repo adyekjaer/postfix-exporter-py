@@ -9,4 +9,4 @@ services:
       - ./testdata:/testdata
       - /usr/sbin/postqueue:/usr/sbin/postqueue:ro
       - /var/spool/postfix/public/showq:/var/spool/postfix/public/showq
-    command: ["--test", "--config", "/app/config.yaml", "--log_unsupported_lines", "--logfile", "/testdata/mail_iso.log"]
+    command: ["--test", "--config", "/app/config.yaml", "--log_unsupported_lines", "--logfile", "/testdata/mail_iso.log", "--postqueue"]
