@@ -60,8 +60,8 @@ class LogParser:
 
     def add_to_unsupported_line(self, line, subprocess, level, message):
         # remove trailing newline from line for better readability
-        line = line.rstrip()
         if self.log_unsupported_lines:
+            line = line.rstrip()
             print(f"\n########################## Unsupported Line ################################:\n{line}\nSubprocess: {subprocess}\nLevel: {level}\nMessage: {message}")
         self.unsupportedLogEntries.labels(subprocess, level).inc()
 
@@ -89,7 +89,6 @@ class LogParser:
         bsd_regex = r'^(\w{3}\s+\d+\s+\d{2}:\d{2}:\d{2})\s+(\S+)\s+([^:]+):\s*(.*)$'
         # ISO8601: allow Z, +00, +0000, +00:00, etc. and relax process part
         iso_regex = r'^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}(?::?\d{2})?)?)\s+(\S+)\s+([^:]+):\s*(.*)$'
-
 
         if self.time_format == 'bsd':
             line_regex = bsd_regex

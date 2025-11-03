@@ -26,4 +26,4 @@ class FileTailer:
                     # File might not exist yet after rotation
                     time.sleep(0.5)
                 continue
-            self.parser.parse_line(line)
+            self.parser.parse(line)
