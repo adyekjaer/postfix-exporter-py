@@ -1,11 +1,13 @@
+import os
 import subprocess
 import json
 
 class PostqueueReader:
-    def __init__(self, postqueue_cmd='/usr/sbin/postqueue -j', test_mode=False, test_file_path=None):
+    def __init__(self, postqueue_cmd='/usr/sbin/postqueue -j', test_mode=False):
         self.postqueue_cmd = postqueue_cmd
         self.test_mode = test_mode
-        self.test_file_path = test_file_path or '../testdata/queue.json'
+        self.test_file_path = os.path.join(os.path.dirname(__file__), '..', 'tests', 'testdata', 'queue.json')
+
 
     def read_queue(self):
         lines = []

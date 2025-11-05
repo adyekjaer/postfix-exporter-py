@@ -6,6 +6,6 @@ services:
     ports:
       - "9115:9115"
     volumes:
-      - /var/log:/var/log
-      - /var/spool/postfix/public/showq:/var/spool/postfix/public/showq:ro
+      - /var/log:/var/log:ro
+      - /var/spool/postfix:/var/spool/postfix:ro
     command: ["--config", "/app/config.yaml", "--log_unsupported_lines", "--logfile", "/var/log/mail.log", "--postqueue"]

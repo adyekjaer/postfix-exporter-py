@@ -19,7 +19,7 @@ Thanks to both projects for test files and inpiration
 
 * Parses Postfix `mail.log` files to extract key metrics.
 * Exposes metrics such as:
-  * Number of queued messages
+  * Number of messages in queue
   * Deferred, bounced, and rejected messages
   * Number of recipients per message
   * SMTP rejects
@@ -28,7 +28,6 @@ Thanks to both projects for test files and inpiration
 ---
 
 ## Todo
-  * Write tests
   * Delivery delays and status codes
   * Work as a systemd process
   * Work in a kubernetes environment
@@ -78,7 +77,7 @@ With a process and subprocess all regexes are performed in sequence until match 
 
 There are 3 static metrics that are build-in:
 
-  * postfix_queue_length (Counter)
+  * postfix_queue_length (Gauge)
   * postfix_message_size (Histogram)
   * postfix_message_nrcpt (Histogram)
 
@@ -157,14 +156,16 @@ Here are some example metrics you can expect:
 | `postfix_smtp_lost_connections`          |                                        | Total SMTP lost connections                                           |
 | `postfix_smtp_noqueue_reject`            |                                        | Total SMTPD noqueue reject events                                     |
 | `postfix_smtp_sasl_failed`               |                                        | Total SMTP SASL authentication failures                               |
-| `postfix_smtp_deliveries`                |                                        | Total SMTP deliveries                                                 |
+| `postfix_smtp_sent`                      |                                        | Total SMTP sent messages                                              |
 | `postfix_smtp_deferred`                  |                                        | Total SMTP deferred messages                                          |
 | `postfix_smtp_bounced`                   |                                        | Total SMTP bounced messages                                           |
 | `postfix_pickup_requests`                |                                        | Total pickup requests                                                 |
-| `postfix_local_deliveries`               |                                        | Total local deliveries                                                |
-| `postfix_virtual_deliveries`             |                                        | Total virtual deliveries                                              |
+| `postfix_relay_smtp_deferred`            |                                        | Total relay SMTP deferred messages                                    |
+| `postfix_relay_smtp_connection_timeout`  | `host`, `ip`                          | Total relay SMTP connection timeouts                                  |
+| `postfix_local_sent`                     |                                        | Total local sent messages                                             |
+| `postfix_virtual_sent`                   |                                        | Total virtual sent messages                                           |
 | `postfix_bounce_bounced`                 |                                        | Total bounce bounced messages                                         |
-| `postfix_lmtp_deliveries`                |                                        | Total LMTP deliveries                                                 |
+| `postfix_lmtp_sent`                      |                                        | Total LMTP sent messages                                              |
 | `postfix_lmtp_deferred`                  |                                        | Total LMTP deferred messages                                          |
 | `postfix_lmtp_bounced`                   |                                        | Total LMTP bounced messages                                           |
 | `postfix_submission_smtp_connections`    |                                        | Total Submission SMTP connections                                     |
