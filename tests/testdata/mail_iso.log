@@ -61,14 +61,18 @@ Jan
 # cleanup
 2025-01-01T00:00:00+00:00 hostname postfix/cleanup[12345]: 123456789AB: milter-reject: END-OF-MESSAGE from example.com[123.45.67.89]: 123 1.2.3 Reasons; from=<user@example.com> to=<user@example.com> proto=ESMTP helo=<example.com>
 2025-01-01T00:00:00+00:00 hostname postfix/cleanup[12345]: Unsupported
+2025-10-31T11:54:03.121850+00:00 hostname postfix/cleanup[34481]: 0BD5F475F7: message-id=<20251031125402.261268@machine.domain>
 # qmgr
 2025-01-01T00:00:00+00:00 hostname postfix/qmgr[12345]: 123456789AB: from=<user@example.com>>, status=expired, returned to sender
 2025-01-01T00:00:00+00:00 hostname postfix/qmgr[12345]: Unsupported
+2025-10-31T11:54:03.126334+00:00 hostname postfix/qmgr[26923]: 0BD5F475F7: from=<from-user@example.com>, size=519, nrcpt=2 (queue active)
+2025-10-31T11:54:03.130912+00:00 hostname postfix/qmgr[26923]: 0BD5F475F7: removed
 # Virtual delivery
+2025-10-31T11:54:03.130838+00:00 hostname postfix/virtual[34482]: 0BD5F475F7: to=<to-user@example.com>, relay=virtual, delay=0.12, delays=0.11/0/0/0, dsn=2.0.0, status=sent (delivered to maildir)
+# SMTP submission
 2025-10-31T11:54:02.735174+00:00 hostname postfix/submission/smtpd[34475]: connect from unknown[123.70.55.238]
 2025-10-31T11:54:03.048633+00:00 hostname postfix/submission/smtpd[34475]: 0BD5F475F7: client=unknown[123.70.55.238], sasl_method=PLAIN, sasl_username=username@example.com
-2025-10-31T11:54:03.121850+00:00 hostname postfix/cleanup[34481]: 0BD5F475F7: message-id=<20251031125402.261268@machine.domain>
-2025-10-31T11:54:03.126334+00:00 hostname postfix/qmgr[26923]: 0BD5F475F7: from=<from-user@example.com>, size=519, nrcpt=2 (queue active)
-2025-10-31T11:54:03.130838+00:00 hostname postfix/virtual[34482]: 0BD5F475F7: to=<to-user@example.com>, relay=virtual, delay=0.12, delays=0.11/0/0/0, dsn=2.0.0, status=sent (delivered to maildir)
-2025-10-31T11:54:03.130912+00:00 hostname postfix/qmgr[26923]: 0BD5F475F7: removed
 2025-10-31T11:54:03.161174+00:00 hostname postfix/submission/smtpd[34475]: disconnect from unknown[123.70.55.238] ehlo=2 starttls=1 auth=1 mail=1 rcpt=1 data=1 quit=1 commands=8
+# Relay SMTP errors
+2025-11-05T04:52:10.949801+00:00 hostname postfix/relay/smtp[34266]: D7B9C40064: to=<to-user@example.com>, relay=none, delay=52835, delays=52715/0.01/120/0, dsn=4.4.1, status=deferred (connect to some.host.com[111.111.68.12]:25: Connection timed out)
+2025-11-04T14:12:06.065871+00:00 hostname postfix/relay/smtp[24763]: connect to some.host.com[111.111.73.15]:25: Connection timed out

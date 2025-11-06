@@ -48,10 +48,10 @@ postfix:
       help: 'Total SMTP SASL authentication failures'
       regex: '(?i)warning: (?P<from>[^\[]+)\[[^\]]+\]: SASL [A-Z]+ authentication failed:'
   smtp:
-    smtp_deliveries:
+    smtp_sent:
       type: counter
-      metric_name: postfix_smtp_deliveries
-      help: 'Total SMTP deliveries'
+      metric_name: postfix_smtp_sent
+      help: 'Total SMTP sent messages'
       regex: '^(?P<id>[A-F0-9]{6,}): to=<(?P<to>[^>]*)>, relay=(?P<relay>[^,]+),.* status=(?P<status>sent)'
     smtp_deferred:
       type: counter
@@ -69,17 +69,28 @@ postfix:
       metric_name: postfix_pickup_requests
       help: 'Total pickup requests'
       regex: '^(?P<id>[A-F0-9]{6,}): uid=(?P<uid>\d+), from=<(?P<from>[^>]*)>'
-  local:
-    local_deliveries:
+  relay/smtp:
+    relay_smtp_deferred:
       type: counter
-      metric_name: postfix_local_deliveries
-      help: 'Total local deliveries'
+      metric_name: postfix_relay_smtp_deferred
+      help: 'Total relay SMTP deferred messages'
+      regex: '^(?P<id>[A-F0-9]{6,}): to=<(?P<to>[^>]*)>, relay=(?P<relay>[^,]+),.* status=(?P<status>deferred)'
+    connection_timeouts:
+      type: counter
+      metric_name: postfix_relay_smtp_connection_timeout
+      help: 'Total Relay SMTP connection timeouts'
+      regex: 'connect to (?P<host>[^\[]+)\[(?P<ip>[^\]]+)\]:\d+: Connection timed out'
+  local:
+    local_sent:
+      type: counter
+      metric_name: postfix_local_sent
+      help: 'Total local sent messages'
       regex: '^(?P<id>[A-F0-9]{6,}): to=<(?P<to>[^>]*)>, relay=local,.* status=(?P<status>sent)'
   virtual:
-    virtual_deliveries:
+    virtual_sent:
       type: counter
-      metric_name: postfix_virtual_deliveries
-      help: 'Total virtual deliveries'
+      metric_name: postfix_virtual_sent
+      help: 'Total virtual sent messages'
       regex: '^(?P<id>[A-F0-9]{6,}): to=<(?P<to>[^>]*)>, relay=virtual,.* status=(?P<status>sent)'
   bounce:
     bounce_bounced:
@@ -88,10 +99,10 @@ postfix:
       help: 'Total bounce bounced messages'
       regex: '^(?P<id>[A-F0-9]{6,}): sender non-delivery notification: (?P<notification_id>[A-F0-9]{6,})'
   lmtp:
-    lmtp_deliveries:
+    lmtp_sent:
       type: counter
-      metric_name: postfix_lmtp_deliveries
-      help: 'Total LMTP deliveries'
+      metric_name: postfix_lmtp_sent
+      help: 'Total LMTP sent messages'
       regex: '^(?P<id>[A-F0-9]{6,}): to=<(?P<to>[^>]*)>, relay=(?P<relay>[^,]+),.* status=(?P<status>sent)'
     lmtp_deferred:
       type: counter
