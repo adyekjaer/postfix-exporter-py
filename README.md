@@ -105,7 +105,7 @@ postfix:
 | `logfile`               | Path to your Postfix mail log file                  |
 | `config`                | Path to configuration file                          |
 | `test`                  | Parses entire file, then exits                      |
-| `log_unsupported_lines` | Outputs lines that was not recognized by any regex  |
+| `log-unsupported`       | Outputs lines that was not recognized by any regex  |
 | `time-format`           | BSD or ISO based timestamps                         |
 | `postqueue`             | Use postqueue for the additional queue metrics      |
 | `port`                  | HTTP port to listen on for prom metrics             |
