@@ -66,6 +66,7 @@ Jan 1 00:00:00 hostname postfix/cleanup[12345]: Unsupported
 Jan 1 00:00:00 hostname postfix/qmgr[12345]: 123456789AB: from=<user@example.com>>, status=expired, returned to sender
 Jan 1 00:00:00 hostname postfix/qmgr[12345]: Unsupported
 Jan 1 00:00:03 hostname postfix/qmgr[26923]: 0BD5F475F7: from=<from-user@example.com>, size=519, nrcpt=1 (queue active)
+Jan 1 00:00:04 hostname postfix/qmgr[26923]: 0BD5F475F7: from=<some-one-else@example.com>, size=1519, nrcpt=1 (queue active)
 Jan 1 00:00:05 hostname postfix/qmgr[26923]: 0BD5F475F7: removed
 # Virtual delivery
 Jan 1 00:00:04 hostname postfix/virtual[34482]: 0BD5F475F7: to=<to-user@example.com>, relay=virtual, delay=0.12, delays=0.11/0/0/0, dsn=2.0.0, status=sent (delivered to maildir)
