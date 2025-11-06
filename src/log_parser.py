@@ -27,23 +27,35 @@ class LogParser:
             ['subprocess', 'level']
         )
 
+        self.postfix_message_bytes = Counter(
+            'postfix_message_bytes',
+            'Total bytes of messages entering Postfix'
+        )
+
         # Add hardcoded histograms for size and nrcpt metrics
         self.postfix_message_size = Histogram(
             'postfix_message_size_bytes',
             'Size of Postfix log messages in bytes',
             buckets=[
                 0,
+                1 * 1024,
                 5 * 1024,
+                10 * 1024,
+                50 * 1024,
+                100 * 1024,
+                500 * 1024,
                 1 * 1024 * 1024,
-                2 * 1024 * 1024,
-                3 * 1024 * 1024,
-                4 * 1024 * 1024,
                 5 * 1024 * 1024,
                 10 * 1024 * 1024,
+                20 * 1024 * 1024,
+                30 * 1024 * 1024,
+                40 * 1024 * 1024,
                 50 * 1024 * 1024,
                 100 * 1024 * 1024,
                 150 * 1024 * 1024,
-                200 * 1024 * 1024, float('inf')]
+                200 * 1024 * 1024,
+                float('inf')
+            ]
         )
         self.postfix_message_nrcpt = Histogram(
             'postfix_message_nrcpt_total',
@@ -139,6 +151,7 @@ class LogParser:
                 nrcpt = m.group('nrcpt')
                 if size:
                     self.postfix_message_size.observe(float(size))
+                    self.postfix_message_bytes.inc(float(size))
                 if nrcpt:
                     self.postfix_message_nrcpt.observe(int(nrcpt))
 

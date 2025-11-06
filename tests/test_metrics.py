@@ -45,10 +45,10 @@ def test_metric_names_and_values(run_exporter):
     metrics = parse_metrics(run_exporter)
     # Dictionary of expected metric names and their expected values (set value to None to only check presence)
     expected_metrics = {
-        'postfix_message_size_bytes_count': 1.0,
-        'postfix_message_nrcpt_total_count': 1.0,
+        'postfix_message_size_bytes_count': 2.0,
+        'postfix_message_nrcpt_total_count': 2.0,
         'postfix_log_levels_total': 1.0,
-        'postfix_qmgr_entering_queue': 1.0,
+        'postfix_qmgr_entering_queue': 2.0,
         'postfix_qmgr_removed': 1.0,
         'postfix_qmgr_expired': 1.0,
         'postfix_cleanup_processes': 1.0,
@@ -74,7 +74,8 @@ def test_metric_names_and_values(run_exporter):
         'postfix_submission_smtp_noqueue': 0.0,
         'postfix_submission_smtp_sasl_failed': 0.0,
         'postfix_relay_smtp_deferred': 1.0,
-        'postfix_relay_smtp_connection_timeout': 1.0
+        'postfix_relay_smtp_connection_timeout': 1.0,
+        'postfix_message_bytes': 2038.0
     }
     for metric, expected_value in expected_metrics.items():
         found = None
@@ -108,17 +109,17 @@ def test_postfix_queue_length_labels(run_exporter):
 def test_postfix_message_nrcpt_total_bucket_labels(run_exporter):
     metrics = parse_labeled_metrics(run_exporter)
     expected = [
-        {"le": "1.0", "value": 0.0},
-        {"le": "2.0", "value": 1.0},
-        {"le": "3.0", "value": 1.0},
-        {"le": "4.0", "value": 1.0},
-        {"le": "5.0", "value": 1.0},
-        {"le": "6.0", "value": 1.0},
-        {"le": "7.0", "value": 1.0},
-        {"le": "8.0", "value": 1.0},
-        {"le": "9.0", "value": 1.0},
-        {"le": "10.0", "value": 1.0},
-        {"le": "+Inf", "value": 1.0}
+        {"le": "1.0", "value": 1.0},
+        {"le": "2.0", "value": 2.0},
+        {"le": "3.0", "value": 2.0},
+        {"le": "4.0", "value": 2.0},
+        {"le": "5.0", "value": 2.0},
+        {"le": "6.0", "value": 2.0},
+        {"le": "7.0", "value": 2.0},
+        {"le": "8.0", "value": 2.0},
+        {"le": "9.0", "value": 2.0},
+        {"le": "10.0", "value": 2.0},
+        {"le": "+Inf", "value": 2.0}
     ]
     for exp in expected:
         found = False
@@ -134,18 +135,23 @@ def test_postfix_message_size_bytes_bucket_labels(run_exporter):
     metrics = parse_labeled_metrics(run_exporter)
     expected = [
         {"le": "0.0", "value": 0.0},
-        {"le": "5120.0", "value": 1.0},
-        {"le": "1.048576e+06", "value": 1.0},
-        {"le": "2.097152e+06", "value": 1.0},
-        {"le": "3.145728e+06", "value": 1.0},
-        {"le": "4.194304e+06", "value": 1.0},
-        {"le": "5.24288e+06", "value": 1.0},
-        {"le": "1.048576e+07", "value": 1.0},
-        {"le": "5.24288e+07", "value": 1.0},
-        {"le": "1.048576e+08", "value": 1.0},
-        {"le": "1.572864e+08", "value": 1.0},
-        {"le": "2.097152e+08", "value": 1.0},
-        {"le": "+Inf", "value": 1.0}
+        {"le": "1024.0", "value": 1.0},
+        {"le": "5120.0", "value": 2.0},
+        {"le": "10240.0", "value": 2.0},
+        {"le": "51200.0", "value": 2.0},
+        {"le": "102400.0", "value": 2.0},
+        {"le": "512000.0", "value": 2.0},
+        {"le": "1.048576e+06", "value": 2.0},
+        {"le": "5.24288e+06", "value": 2.0},
+        {"le": "1.048576e+07", "value": 2.0},
+        {"le": "2.097152e+07", "value": 2.0},
+        {"le": "3.145728e+07", "value": 2.0},
+        {"le": "4.194304e+07", "value": 2.0},
+        {"le": "5.24288e+07", "value": 2.0},
+        {"le": "1.048576e+08", "value": 2.0},
+        {"le": "1.572864e+08", "value": 2.0},
+        {"le": "2.097152e+08", "value": 2.0},
+        {"le": "+Inf", "value": 2.0}
     ]
     for exp in expected:
         found = False
@@ -194,7 +200,7 @@ def test_postfix_log_levels_total_labels(run_exporter):
         {"level": "info", "process": "postfix", "subprocess": "lmtp", "value": 3.0},
         {"level": "info", "process": "postfix", "subprocess": "smtp", "value": 9.0},
         {"level": "info", "process": "postfix", "subprocess": "cleanup", "value": 3.0},
-        {"level": "info", "process": "postfix", "subprocess": "qmgr", "value": 4.0},
+        {"level": "info", "process": "postfix", "subprocess": "qmgr", "value": 5.0},
         {"level": "info", "process": "postfix", "subprocess": "virtual", "value": 1.0},
         {"level": "info", "process": "postfix", "subprocess": "submission/smtpd", "value": 3.0},
         {"level": "info", "process": "postfix", "subprocess": "relay/smtp", "value": 2.0},
