@@ -10,14 +10,23 @@ CONFIG = os.path.abspath(os.path.join(os.path.dirname(__file__), '../src/config.
 @pytest.fixture(scope="module")
 def run_exporter():
     # Run exporter in test mode and capture output
-    result = subprocess.run([
-        'python', EXPORTER_SCRIPT,
-        '--test',
-        '--logfile', STATIC_LOG,
-        '--config', CONFIG,
-        '--postqueue'
-    ], capture_output=True, text=True, check=True)
-    print(result.stdout)
+    try:
+        result = subprocess.run([
+            'python', EXPORTER_SCRIPT,
+            '--test',
+            '--logfile', STATIC_LOG,
+            '--config', CONFIG,
+            '--postqueue'
+        ], capture_output=True, text=True, check=True)
+        print("STDOUT:", result.stdout)
+        print("STDERR:", result.stderr)
+        print("Return code:", result.returncode)
+    except subprocess.CalledProcessError as e:
+        print("Subprocess failed!")
+        print("STDOUT:", e.stdout)
+        print("STDERR:", e.stderr)
+        raise
+
     return result.stdout
 
 def parse_metrics(output):
