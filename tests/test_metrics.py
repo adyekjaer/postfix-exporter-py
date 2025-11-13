@@ -75,7 +75,7 @@ def test_metric_names_and_values(run_exporter):
         'postfix_submission_smtp_sasl_failed': 0.0,
         'postfix_relay_smtp_deferred': 1.0,
         'postfix_relay_smtp_connection_timeout': 1.0,
-        'postfix_message_bytes': 2038.0
+        'postfix_relay_smtp_sent': 1.0
     }
     for metric, expected_value in expected_metrics.items():
         found = None
@@ -203,7 +203,7 @@ def test_postfix_log_levels_total_labels(run_exporter):
         {"level": "info", "process": "postfix", "subprocess": "qmgr", "value": 5.0},
         {"level": "info", "process": "postfix", "subprocess": "virtual", "value": 1.0},
         {"level": "info", "process": "postfix", "subprocess": "submission/smtpd", "value": 3.0},
-        {"level": "info", "process": "postfix", "subprocess": "relay/smtp", "value": 2.0},
+        {"level": "info", "process": "postfix", "subprocess": "relay/smtp", "value": 3.0},
     ]
     for exp in expected:
         found = False

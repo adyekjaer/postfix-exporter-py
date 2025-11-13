@@ -77,3 +77,4 @@ Jan 1 00:00:06 hostname postfix/submission/smtpd[34475]: disconnect from unknown
 # Relay SMTP errors
 Jan 1 00:00:07 hostname postfix/relay/smtp[34266]: D7B9C40064: to=<to-user@example.com>, relay=none, delay=52835, delays=52715/0.01/120/0, dsn=4.4.1, status=deferred (connect to some.host.com[111.111.68.12]:25: Connection timed out)
 Jan 1 00:00:07 hostname postfix/relay/smtp[24763]: connect to some.host.com[111.111.73.15]:25: Connection timed out
+Jan 1 00:00:08 hostname postfix/relay/smtp[456468]: 51C89802A8: to=<to-user@example.com>, relay=some.host.com[152.111.73.4]:25, delay=1.6, delays=0.07/0/0.09/1.4, dsn=2.6.0, status=sent (250 2.6.0 <8T3Z2M1RPRU4.PT9F8LCYDICI3@no-rds02> [InternalId=77275051596713, Hostname=some.host.com] 9667 bytes in 0.150, 62.617 KB/sec Queued mail for delivery)

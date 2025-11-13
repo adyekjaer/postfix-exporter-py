@@ -145,7 +145,6 @@ Here are some example metrics you can expect:
 | `postfix_queue_length`                   | `queue_name`                          | Number of messages in each postfix queue (active, deferred, hold, incoming, maildrop) |
 | `postfix_unsupported_log_entries_total`  | `subprocess`, `level`                 | Total number of unsupported Postfix log entries                       |
 | `postfix_message_size_bytes`             |                                        | Size of messages in bytes (histogram)                                |
-| `postfix_message_bytes`                  |                                        | Total size of messages in bytes (counter)                            |
 | `postfix_message_nrcpt_total`            |                                        | Number of recipients for Postfix log messages (histogram)             |
 | `postfix_log_levels_total`               | `level`, `process`, `subprocess`      | Total number of Postfix log entries by level, process, and subprocess |
 | `postfix_qmgr_entering_queue`            |                                        | Qmgr messages entering queue events                                   |
@@ -162,7 +161,8 @@ Here are some example metrics you can expect:
 | `postfix_smtp_bounced`                   |                                        | Total SMTP bounced messages                                           |
 | `postfix_pickup_requests`                |                                        | Total pickup requests                                                 |
 | `postfix_relay_smtp_deferred`            |                                        | Total relay SMTP deferred messages                                    |
-| `postfix_relay_smtp_connection_timeout`  | `host`, `ip`                          | Total relay SMTP connection timeouts                                  |
+| `postfix_relay_smtp_connection_timeout`  | `host`, `ip`                          | Total relay SMTP connection timeouts                                   |
+| `postfix_relay_smtp_sent`                |                                        | Total relay SMTP sent messages                                        |
 | `postfix_local_sent`                     |                                        | Total local sent messages                                             |
 | `postfix_virtual_sent`                   |                                        | Total virtual sent messages                                           |
 | `postfix_bounce_bounced`                 |                                        | Total bounce bounced messages                                         |

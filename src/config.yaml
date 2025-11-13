@@ -80,6 +80,11 @@ postfix:
       metric_name: postfix_relay_smtp_connection_timeout
       help: 'Total Relay SMTP connection timeouts'
       regex: 'connect to (?P<host>[^\[]+)\[(?P<ip>[^\]]+)\]:\d+: Connection timed out'
+    sent:
+      type: counter
+      metric_name: postfix_relay_smtp_sent
+      help: 'Total relay SMTP sent messages'
+      regex: '^(?P<id>[A-F0-9]{6,}): to=(?P<to>[^,]*), relay=(?P<relay>[^[]+)\[(?P<ip>[^\]]+)\]:\d+, delay=(?P<delay>[\d.]+), delays=(?P<delays>[\d./]+), dsn=(?P<dsn>[\d.]+), status=(?P<status>\w+) \((?P<details>.+)\)'
   local:
     local_sent:
       type: counter
